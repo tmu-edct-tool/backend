@@ -10,3 +10,6 @@ gen
 # Project files
 ## Node
 node_modules
+
+## Others
+.env
