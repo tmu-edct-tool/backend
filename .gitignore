@@ -6,3 +6,7 @@ gen
 
 # macOS Crap
 .ds_store
+
+# Project files
+## Node
+node_modules
