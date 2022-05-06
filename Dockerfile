@@ -10,7 +10,7 @@ RUN npm install
 # For production
 # RUN npm ci --only=production
 
-COPY . .
+COPY .. .
 
 EXPOSE 3000
 
