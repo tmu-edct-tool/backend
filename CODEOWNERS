@@ -1,0 +1,17 @@
+# Global Code Owners
+*               @tmu-edct-tool/developers
+
+# Specific Code Owners
+# Github Workflows:
+/.github/       @kmoberg
+
+# Docker
+Dockerfile          @kmoberg
+docker-compose.yml @kmoberg
+.dockerignore       @kmoberg
+
+# Project Files
+README.md           @kmoberg
+LICENSE             @kmoberg
+CONTRIBUTING.md    @kmoberg
+CODEOWNERS         @kmoberg
