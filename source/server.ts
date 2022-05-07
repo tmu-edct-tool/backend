@@ -38,6 +38,12 @@ router.use((req, res, next) => {
     next();
 });
 
+/** Middleware, passes datafeed into res.locals */
+router.use(async (req, res, next) => {
+    res.locals.dataFeed = feed;
+    next();
+});
+
 /** ROUTES */
 router.use('/', routes);
 
