@@ -2,6 +2,9 @@ import http from 'http';
 import express, { Express } from 'express';
 import morgan from "morgan";
 import routes from './routes/posts';
+import "./models/status";
+import "./models/datafeed";
+import { pullFeed } from "./vatsim";
 
 const router: Express = express();
 
@@ -11,6 +14,15 @@ router.use(morgan('dev'));
 router.use(express.urlencoded({ extended: false }));
 /** Takes care of JSON data */
 router.use(express.json());
+
+/** Create the datafeed variable */
+let feed: DataFeed;
+
+/** Load the datafeed on startup and update it every 15 seconds */
+(async () => {
+    await pullFeed().then(d => feed = d);
+    setInterval(async () => await pullFeed().then(d => feed = d), 15 * 1000);
+})();
 
 /** RULES OF THE API */
 router.use((req, res, next) => {
