@@ -1,0 +1,17 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# macOS Crap
+.ds_store
+
+# Project files
+## Node
+node_modules
+
+## Others
+.env
+.nyc_output
+coverage
