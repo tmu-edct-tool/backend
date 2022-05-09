@@ -76,8 +76,8 @@ interface Server {
     location: string;
     name: string;
     clients_connection_allowed: number;
-    client_connections_allowed: Boolean;
-    is_sweatbox: Boolean;
+    client_connections_allowed: boolean;
+    is_sweatbox: boolean;
 }
 
 interface Prefile {
