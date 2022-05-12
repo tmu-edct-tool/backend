@@ -16,7 +16,7 @@
   "scripts": {
     "dev": "nodemon source/server.ts",
     "build": "rm -rf build/ && prettier --write source/ && tsc",
-    "test": "nyc --reporter=html mocha -r ts-node/register source/test --reporter landing"
+    "test": "nyc --reporter=html mocha source/test --reporter landing"
   },
   "dependencies": {
     "@turf/turf": "^6.5.0",
@@ -39,11 +39,5 @@
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "prettier": "2.6.2"
-  },
-  "mocha": {
-    "spec": "./**/*.ts",
-    "require": [
-      "ts-node/register"
-    ]
   }
 }
