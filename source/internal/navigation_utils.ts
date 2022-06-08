@@ -2,71 +2,71 @@ import * as turf from "@turf/turf";
 import { LineString } from "@turf/turf";
 
 function extractRouteSegments(routeString: String): RouteSegment[] {
-    let elements = getRouteElements(routeString);
-    let result: RouteSegment[] = [];
+	let elements = getRouteElements(routeString);
+	let result: RouteSegment[] = [];
 
-    for (let i = 0; i < elements.length;) {
-        const curr = elements[i];
-        if (isWaypoint(curr)) {
-            /*
-             try addAirwaySegments(curr, nextAirway, nextWaypoint)
-             try addDirect(curr, nextWaypoint)
-             try addStar(currTransition, nextStar)
-             */
-        }
-        if (isRhoThetaIntersection(curr)) {
-            /*
-             try addDirect(curr, nextWaypoint)
-             try addDirectNearestAirwaySegment(curr, nextAirway, nextWaypointOnAirway)
-             */
-        }
-        if (isVorRadial(curr)) {
-            /*
-             try addDirect(curr.VOR, nextWaypoint)
-             try projectRadialToAirway(curr, nextAirway)
-             */
-        }
-        if (isSidStar(curr)) {
-            /*
-             try prependSid and terminate to first element past SID
-             try connecting last element before STAR to STAR and appendStar
-             */
-        }
+	for (let i = 0; i < elements.length;) {
+		const curr = elements[i];
+		if (isWaypoint(curr)) {
+			/*
+			 try addAirwaySegments(curr, nextAirway, nextWaypoint)
+			 try addDirect(curr, nextWaypoint)
+			 try addStar(currTransition, nextStar)
+			 */
+		}
+		if (isRhoThetaIntersection(curr)) {
+			/*
+			 try addDirect(curr, nextWaypoint)
+			 try addDirectNearestAirwaySegment(curr, nextAirway, nextWaypointOnAirway)
+			 */
+		}
+		if (isVorRadial(curr)) {
+			/*
+			 try addDirect(curr.VOR, nextWaypoint)
+			 try projectRadialToAirway(curr, nextAirway)
+			 */
+		}
+		if (isSidStar(curr)) {
+			/*
+			 try prependSid and terminate to first element past SID
+			 try connecting last element before STAR to STAR and appendStar
+			 */
+		}
 
-        // i += count consumed elements
-    }
+		// i += count consumed elements
+	}
 
-    return result;
+	return result;
 }
 
 function getRouteElements(rawRoute: String): string[] {
-    rawRoute = rawRoute.trim().toLocaleUpperCase();
-    let tidyRoute = rawRoute
-        .replace(/(^[^\w_]*)|([^\w_]*$)/g, "") // remove leading and trailing non-alphanumeric
-        .replace(/(\w+)\/(\w+)/g, "$1") // remove step climb (e.g. JFK/N0450F390) and runway (e.g. KEWR/22L)
-    // TODO: verify if dot-connected transitions (e.g. PORTT4.LANNA) should be preserved
+	rawRoute = rawRoute.trim().toLocaleUpperCase();
+	let tidyRoute = rawRoute
+		.replace(/(^[^\w_]*)|([^\w_]*$)/g, "") // remove leading and trailing non-alphanumeric
+		.replace(/(\w+)\/(\w+)/g, "$1"); // remove step climb (e.g. JFK/N0450F390) and runway (e.g. KEWR/22L)
+	// TODO: verify if dot-connected transitions (e.g. PORTT4.LANNA) should be preserved
 
-    return tidyRoute.split(" ").filter((e) => e != "DCT"); // remove DCT
+	return tidyRoute.split(" ").filter((e) => e != "DCT"); // remove DCT
 }
 
 function isWaypoint(element: String): boolean {
-    return false;
+	return false;
 }
 
 function isRhoThetaIntersection(element: String): boolean {
-    return false;
+	return false;
 }
 
 function isVorRadial(element: String): boolean {
-    return false;
+	return false;
 }
 
 function isAirway(element: String): boolean {
-    return false;
+	return false;
 }
 
 function isSidStar(element: String): boolean {
-    return false;
+	return false;
 }
 
 /**
@@ -76,22 +76,22 @@ function isSidStar(element: String): boolean {
  * @param dme
  */
 export function findRadialDmeIntersection(
-    vor: {lonX: number; latY: number; magVariation?: number},
-    radial: number,
-    dme: number
+	vor: { lonX: number; latY: number; magVariation?: number },
+	radial: number,
+	dme: number
 ): number[] | undefined {
-    const distanceTolerance = 10.0, kmDistance = dme * 1.852;
-    const bearing = normalizeBearing(radial + (vor.magVariation || 0.0));  // convert radial to true
-    const result = turf.destination([vor.lonX, vor.latY], kmDistance, bearing);
-    if (turf.distance(result, [vor.lonX, vor.latY]) < distanceTolerance)
-        return normalizeCoordinates(result.geometry.coordinates);
-    return undefined;
-    // this function applies to most cases
-    // will return undefined for corner cases such as 'VOR' is right at N/S pole
-    /*
-     const bearing = normalizeBearing(radial) // facilities are oriented to true North at higher lats
-     let result = turf.destination([bearing, vor.latY], kmDistance, 0)  // always use 0 for third param, regardless of N/S
-     */
+	const distanceTolerance = 10.0, kmDistance = dme * 1.852;
+	const bearing = normalizeBearing(radial + (vor.magVariation || 0.0));  // convert radial to true
+	const result = turf.destination([vor.lonX, vor.latY], kmDistance, bearing);
+	if (turf.distance(result, [vor.lonX, vor.latY]) < distanceTolerance)
+		return normalizeCoordinates(result.geometry.coordinates);
+	return undefined;
+	// this function applies to most cases
+	// will return undefined for corner cases such as 'VOR' is right at N/S pole
+	/*
+	 const bearing = normalizeBearing(radial) // facilities are oriented to true North at higher lats
+	 let result = turf.destination([bearing, vor.latY], kmDistance, 0)  // always use 0 for third param, regardless of N/S
+	 */
 }
 
 /**
@@ -102,13 +102,13 @@ export function findRadialDmeIntersection(
  * @param airwayLineString
  */
 export function findRadialAirwayIntersection(
-    vor: {lonX: number; latY: number; magVariation?: number},
-    radial: number,
-    airwayLineString: LineString
-    ) {
-    // make vorRadialLine: LineString from vor and radial
-    // const intersections = turf.lineIntersect(vorRadialLine, airwayLineString)
-    // return the first (closest) intersection to vor
+	vor: { lonX: number; latY: number; magVariation?: number },
+	radial: number,
+	airwayLineString: LineString
+) {
+	// make vorRadialLine: LineString from vor and radial
+	// const intersections = turf.lineIntersect(vorRadialLine, airwayLineString)
+	// return the first (closest) intersection to vor
 }
 
 /**
@@ -120,10 +120,10 @@ export function findRadialAirwayIntersection(
  * @param radial2
  */
 export function findRadialRadialIntersection(
-    vor1: {lonX: number; latY: number; magVariation?: number},
-    vor2: {lonX: number; latY: number; magVariation?: number},
-    radial1: number,
-    radial2: number
+	vor1: { lonX: number; latY: number; magVariation?: number },
+	vor2: { lonX: number; latY: number; magVariation?: number },
+	radial1: number,
+	radial2: number
 ) {
 
 }
@@ -133,7 +133,7 @@ export function findRadialRadialIntersection(
  * @param bearing to be normalized
  */
 function normalizeBearing(bearing: number) {
-    return normalizeToRange(bearing, -180, 180);
+	return normalizeToRange(bearing, -180, 180);
 }
 
 /**
@@ -141,10 +141,10 @@ function normalizeBearing(bearing: number) {
  * @param coordinates pair to be normalized
  */
 function normalizeCoordinates(coordinates: number[]) {
-    return [
-        normalizeToRange(coordinates[0], -90, 90),
-        normalizeToRange(coordinates[1], -180, 180)
-    ]
+	return [
+		normalizeToRange(coordinates[0], -90, 90),
+		normalizeToRange(coordinates[1], -180, 180)
+	];
 }
 
 /**
@@ -154,28 +154,28 @@ function normalizeCoordinates(coordinates: number[]) {
  * @param end maximum value of the range, exclusive
  */
 function normalizeToRange(value: number, start: number, end: number) {
-    const width = end - start, offset = value - start;
-    return offset - Math.floor(offset / width) * width + start;
+	const width = end - start, offset = value - start;
+	return offset - Math.floor(offset / width) * width + start;
 }
 
 function convertToDmsCoordinates(point: number[]) {
-    return [
-        convertDecimalToDms(point[0] || 0),
-        convertDecimalToDms(point[1] || 0)
-    ];
+	return [
+		convertDecimalToDms(point[0] || 0),
+		convertDecimalToDms(point[1] || 0)
+	];
 }
 
 function convertDecimalToDms(dd: number): number[] {
-    const flag = dd > 0;
-    dd = Math.abs(dd);
-    let d = Math.floor(dd);
-    let m = Math.floor((dd - d) * 60);
-    let s = Math.round(
-        (((dd - d) * 60 - m) * 60 * Math.pow(10, 2)) / Math.pow(10, 2)
-    );
-    s == 60 && (m++, (s = 0));
-    m == 60 && (d++, (m = 0));
-    return [
-        flag ? d : -d, m, s
-    ];
+	const flag = dd > 0;
+	dd = Math.abs(dd);
+	let d = Math.floor(dd);
+	let m = Math.floor((dd - d) * 60);
+	let s = Math.round(
+		(((dd - d) * 60 - m) * 60 * Math.pow(10, 2)) / Math.pow(10, 2)
+	);
+	s == 60 && (m++, (s = 0));
+	m == 60 && (d++, (m = 0));
+	return [
+		flag ? d : -d, m, s
+	];
 }
